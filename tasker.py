@@ -9,7 +9,9 @@ cursor.execute('''
     CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    status TEXT DEFAULT 'todo')
+    status TEXT DEFAULT 'todo',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT NULL)
 ''')
 
 def add_task(task:str) -> None: 
@@ -19,8 +21,9 @@ def add_task(task:str) -> None:
     con.close()
 
 def update_task(id:int,task:str) -> None:
-    cursor.execute("UPDATE tasks SET name = ? WHERE id = ?",(task,id,))
-    con.close();
+    cursor.execute("UPDATE tasks SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",(task,id))
+    con.commit()
+    con.close()
 
 def delete_task(id:int) -> None:
     cursor.execute("DELETE FROM tasks WHERE id = ?",(id,))
@@ -30,8 +33,9 @@ def delete_task(id:int) -> None:
 def list_tasks() -> None:
     cursor.execute("SELECT * FROM tasks")
     rows = cursor.fetchall()
-    print(rows)
     con.close()
+    for row in rows:
+        print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
 
 if __name__ == "__main__":
     
