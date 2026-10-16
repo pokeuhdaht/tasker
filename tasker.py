@@ -3,8 +3,6 @@ import sys
 import argparse
 
 
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description='Tasker - Simple Task Managing App')
 
@@ -17,16 +15,6 @@ def main() -> None:
     update_parser.add_argument('id', type=int, help='ID for the task being changed')
     update_parser.add_argument('task', help='The new name of the task')
     
-
-
-
-
-
-
-
-
-
-
 
 
 
