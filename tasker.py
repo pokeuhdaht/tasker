@@ -1,15 +1,40 @@
 import json
+import sqlite3
 import sys
 import argparse
 
+con = sqlite3.connect("tasker.db")
+cursor = con.cursor()
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    status TEXT DEFAULT 'todo')
+''')
 
-    
+def add_task(task:str) -> None: 
+    cursor.execute("INSERT INTO tasks (name) VALUES (?)",(task,))
+    #cursor.execute("SELECT * FROM tasks")
+    con.commit()
+    con.close()
 
+def update_task(id:int,task:str) -> None:
+    cursor.execute("UPDATE tasks SET name = ? WHERE id = ?",(task,id,))
+    con.close();
 
+def delete_task(id:int) -> None:
+    cursor.execute("DELETE FROM tasks WHERE id = ?",(id,))
+    con.commit()
+    con.close()
 
-
+def list_tasks() -> None:
+    cursor.execute("SELECT * FROM tasks")
+    rows = cursor.fetchall()
+    print(rows)
+    con.close()
 
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser(description='Tasker - Simple Task Managing App')
 
     sub_parser = parser.add_subparsers(dest='command')
@@ -44,10 +69,13 @@ if __name__ == "__main__":
 
     if args.command == 'add':
         print(f"add command: task: {args.task}")
+        add_task(args.task)
     elif args.command == 'update':
         print(f"update command: id: {args.id} task: {args.task}")
+        update_task(args.task,args.id)
     elif args.command == 'delete':
         print(f"delete command: id: {args.id}")
+        delete_task(args.id)
     elif args.command == 'mark-done':
         print(f"mark-done command: id: {args.id}")
     elif args.command == 'mark-in-progress':
@@ -60,5 +88,6 @@ if __name__ == "__main__":
         print(f"in-progress command")
     elif args.command == 'list':
         print(f"list command")
+        list_tasks()
     else:
         print(f"Something went wrong")
