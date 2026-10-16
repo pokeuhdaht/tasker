@@ -3,11 +3,8 @@ import sys
 import argparse
 
 
-#def main() -> None:
     
 
-
-states = ['done', 'in-progress', 'todo']
 
 
 
@@ -36,11 +33,11 @@ if __name__ == "__main__":
     list_parser = sub_parser.add_parser('list', help="List all tasks")
 
 
-    list_sub_parser = list_parser.add_subparsers
+    list_sub_parser = list_parser.add_subparsers(dest='list_command')
     
-    #list_todo_parser = list_parser.add_argument('todo', help='List the remaing tasks that are marked as "to-do"')
-    #list_done_parser = list_parser.add_argument('done', help='List the completed tasks that are marked as "done"')
-    #list_inprogress_parser = list_parser.add_parser('in-progress', help='List the remaining tasks that are marked as "in-progress"')
+    list_todo_parser = list_sub_parser.add_parser('todo', help='List the remaing tasks that are marked as "to-do"')
+    list_done_parser = list_sub_parser.add_parser('done', help='List the completed tasks that are marked as "done"')
+    list_inprogress_parser = list_sub_parser.add_parser('in-progress', help='List the remaining tasks that are marked as "in-progress"')
     
 
     args = parser.parse_args()
@@ -55,7 +52,13 @@ if __name__ == "__main__":
         print(f"mark-done command: id: {args.id}")
     elif args.command == 'mark-in-progress':
         print(f"mark-in-progress command: id: {args.id}")
+    elif args.list_command == 'todo':
+        print(f"todo command")
+    elif args.list_command == 'done':
+        print(f"done command")
+    elif args.list_command == 'in-progress':
+        print(f"in-progress command")
     elif args.command == 'list':
-        print(f"list command: id: {args.id}")
+        print(f"list command")
     else:
         print(f"Something went wrong")
