@@ -5,27 +5,44 @@ import argparse
 
 
 
-parser = argparse.ArgumentParser(
-    prog='Tasker',
-    description='Manage your LIFE!'
-)
+def main() -> None:
+    parser = argparse.ArgumentParser(description='Tasker - Simple Task Managing App')
+
+    sub_parser = parser.add_subparsers(dest='argument')
+    
+    add_parser = sub_parser.add_parser('add', help='Add a task to the list')
+    add_parser.add_argument('task', type=str, help='Task being added')
+
+    update_parser = sub_parser.add_parser('update', help='Update an existing task')
+    update_parser.add_argument('id', type=int, help='ID for the task being changed')
+    update_parser.add_argument('task', help='The new name of the task')
+    
 
 
 
 
-#parser.add_argument()
 
 
 
 
 
-subparsers = parser.add_subparsers()
-
-parser_add = subparsers.add_parser('add', help='add help')
-
-parser_delete = subparsers.add_parser('delete', help='delete help')
-
-parser_update = subparsers.add_parser('update', help='update help')
 
 
-parser.parse_args(['add', '-h'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    main()
