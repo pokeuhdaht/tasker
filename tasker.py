@@ -20,9 +20,10 @@ def add_task(task:str) -> None:
     con.commit()
     con.close()
 
-def update_task(id:int,task:str) -> None:
+def update_task(task:str,id:int) -> None:
     cursor.execute("UPDATE tasks SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",(task,id))
     con.commit()
+    print(f"ID: {id}, Type: {type(id)}, Name: {task}")
     con.close()
 
 def delete_task(id:int) -> None:
