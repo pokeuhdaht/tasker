@@ -86,7 +86,7 @@ def mark_task_in_progress(id:int) -> None:
     con.close()
 
 # mark task as 'done'
-def mark_task_done(id:int):
+def mark_task_done(id:int) -> None:
     cursor.execute("UPDATE tasks SET status = ? WHERE id = ?",("done",id))
     on.commit()
     con.close()
