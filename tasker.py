@@ -1,7 +1,8 @@
 import json
 import sqlite3
-import sys
 import argparse
+
+
 
 con = sqlite3.connect("tasker.db")
 cursor = con.cursor()
@@ -16,7 +17,6 @@ cursor.execute('''
 
 def add_task(task:str) -> None: 
     cursor.execute("INSERT INTO tasks (name) VALUES (?)",(task,))
-    #cursor.execute("SELECT * FROM tasks")
     con.commit()
     con.close()
 
@@ -144,7 +144,6 @@ if __name__ == "__main__":
     elif args.list_command == 'in-progress':                        # List all tasks marked as 'in-progress'abs
         list_in_progress_tasks()
     elif args.command == 'list':                                    # List all tasks
-        print(f"list command")
         list_tasks()
     else:                                                           
         print(f"Something went wrong")
