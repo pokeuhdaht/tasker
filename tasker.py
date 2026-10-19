@@ -9,7 +9,7 @@ cursor.execute('''
     CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    status TEXT DEFAULT 'todo',
+    status TEXT DEFAULT 'to do',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL)
 ''')
@@ -37,6 +37,51 @@ def list_tasks() -> None:
     for row in rows:
         print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
 
+def list_todo_tasks() -> None:
+    cursor.execute("SELECT * FROM tasks WHERE status = 'to do'")
+    rows = cursor.fetchall()
+    con.close()
+    if not rows:
+        print(f"No tasks markes as 'to do'")
+    else:
+        for row in rows:
+            print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
+
+def list_done_tasks() -> None:
+    cursor.execute("SELECT * FROM tasks WHERE status = 'done'")
+    rows = cursor.fetchall()
+    con.close()
+    if not rows:
+        print(f"No tasks markes as 'done'")
+    else:
+        for row in rows:
+            print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
+
+def list_in_progress_tasks() -> None:
+    cursor.execute("SELECT * FROM tasks WHERE status = 'in-progress'")
+    rows = cursor.fetchall()
+    con.close()
+    if not rows:
+        print(f"No tasks markes as 'in-progress'")
+    else:
+        for row in rows:
+            print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
+
+def mark_task_todo(id:int) -> None:
+    cursor.execute("UPDATE tasks SET status = ? WHERE id = ?",("to do", id))
+    con.commit()
+    con.close()
+
+def mark_task_in_progress(id:int) -> None:
+    cursor.execute("UPDATE tasks SET status = ? WHERE id = ?",("in-progress", id))
+    con.commit()
+    con.close()
+
+def mark_task_done(id:int):
+    cursor.execute("UPDATE tasks SET status = ? WHERE id = ?",("done",id))
+    on.commit()
+    con.close()
+
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='Tasker - Simple Task Managing App')
@@ -53,6 +98,9 @@ if __name__ == "__main__":
     update_parser.add_argument('id', type=int, help='ID of the task being changed')
     update_parser.add_argument('task', help='The new name of the task')
     
+    mark_todo_parser = sub_parser.add_parser('mark-todo', help='Mark task as To Do')
+    mark_todo_parser.add_argument('id', type=int, help='ID of the task being marked as "to do"')
+
     mark_in_progress_parser = sub_parser.add_parser('mark-in-progress', help='Mark task as "in-progress"')
     mark_in_progress_parser.add_argument('id', type=int, help='ID of the task being marked as "in-progress"')
 
@@ -71,27 +119,32 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.command == 'add':
-        print(f"add command: task: {args.task}")
+    if args.command == 'add':                                       # Add task
         add_task(args.task)
-    elif args.command == 'update':
-        print(f"update command: id: {args.id} task: {args.task}")
+        print(f"Added '{args.task}' to list.")
+    elif args.command == 'update':                                  # Update task
         update_task(args.task,args.id)
-    elif args.command == 'delete':
-        print(f"delete command: id: {args.id}")
+        print(f"Updated task id: {args.id} to be named '{args.task}'")
+    elif args.command == 'delete':                                  # Delete task
         delete_task(args.id)
-    elif args.command == 'mark-done':
-        print(f"mark-done command: id: {args.id}")
-    elif args.command == 'mark-in-progress':
-        print(f"mark-in-progress command: id: {args.id}")
-    elif args.list_command == 'todo':
-        print(f"todo command")
-    elif args.list_command == 'done':
-        print(f"done command")
-    elif args.list_command == 'in-progress':
-        print(f"in-progress command")
-    elif args.command == 'list':
+        print(f"Deleted task with id: {args.id}")
+    elif args.command == 'mark-todo':                          # Mark task as 'to do'
+        mark_task_todo(args.id)
+        print(f"marked task id {args.id} as: 'to do'")
+    elif args.command == 'mark-done':                               # Mark task as 'done'
+        mark_task_done(args.id)
+        print(f"marked task id {args.id} as: 'done'")
+    elif args.command == 'mark-in-progress':                        # Mark task as 'in-progress'
+        mark_task_in_progress(args.id)
+        print(f"marked task id {args.id} as: 'in-progress'")
+    elif args.list_command == 'todo':                               # List all tasks marked 'to do'
+        list_todo_tasks()
+    elif args.list_command == 'done':                               # List all tasks marked as 'done'
+        list_done_tasks()
+    elif args.list_command == 'in-progress':                        # List all tasks marked as 'in-progress'abs
+        list_in_progress_tasks()
+    elif args.command == 'list':                                    # List all tasks
         print(f"list command")
         list_tasks()
-    else:
+    else:                                                           
         print(f"Something went wrong")
