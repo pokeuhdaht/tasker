@@ -1,6 +1,6 @@
-<h1 align="center">TASKER</h1>
+<h1 align="center">TASKER.py</h1>
 <h2 align="center">Command Line task tracking app.</h2>
-<p style="color:red">**This Application <u>REQUIRES</u> Python3**</p>
+<p><span style="color:red">**This Application <u>REQUIRES</u> Python3**</span></p>
 <h3>This was a project to get acquainted with "argparse" and "sqlite3" in python.</h3>
 <p>I learned how to parse arguments in Python, as well as create sub parsers. This was needed for some sub-commands. I also got to learn more about SQLite and it's usage in Python syntax.
 This was a fun project, I'd recommend making a simple task tracker app to anyone that is new to Python.</p>
