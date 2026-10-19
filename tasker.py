@@ -2,10 +2,9 @@ import json
 import sqlite3
 import argparse
 
-
-
 con = sqlite3.connect("tasker.db")
 cursor = con.cursor()
+# creates a new DB file if one does not already exist
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,21 +14,25 @@ cursor.execute('''
     updated_at TIMESTAMP DEFAULT NULL)
 ''')
 
+# adds a task to the db file
 def add_task(task:str) -> None: 
     cursor.execute("INSERT INTO tasks (name) VALUES (?)",(task,))
     con.commit()
     con.close()
 
+# update a task
 def update_task(task:str,id:int) -> None:
     cursor.execute("UPDATE tasks SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",(task,id))
     con.commit()
     con.close()
 
+# delete a task
 def delete_task(id:int) -> None:
     cursor.execute("DELETE FROM tasks WHERE id = ?",(id,))
     con.commit()
     con.close()
 
+# list a task
 def list_tasks() -> None:
     cursor.execute("SELECT * FROM tasks")
     rows = cursor.fetchall()
@@ -37,6 +40,7 @@ def list_tasks() -> None:
     for row in rows:
         print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
 
+# list tasks marked as 'to do'
 def list_todo_tasks() -> None:
     cursor.execute("SELECT * FROM tasks WHERE status = 'to do'")
     rows = cursor.fetchall()
@@ -47,6 +51,7 @@ def list_todo_tasks() -> None:
         for row in rows:
             print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
 
+# list tasks marked as 'done'
 def list_done_tasks() -> None:
     cursor.execute("SELECT * FROM tasks WHERE status = 'done'")
     rows = cursor.fetchall()
@@ -57,6 +62,7 @@ def list_done_tasks() -> None:
         for row in rows:
             print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
 
+# list tasks marked as 'in-progress'
 def list_in_progress_tasks() -> None:
     cursor.execute("SELECT * FROM tasks WHERE status = 'in-progress'")
     rows = cursor.fetchall()
@@ -67,16 +73,19 @@ def list_in_progress_tasks() -> None:
         for row in rows:
             print(f"ID: {row[0]:<3} | {row[1]:^27} | Status: {row[2]} | Created at: {row[3]} | Updated at: {row[4]}")
 
+# mark task as 'to do'
 def mark_task_todo(id:int) -> None:
     cursor.execute("UPDATE tasks SET status = ? WHERE id = ?",("to do", id))
     con.commit()
     con.close()
 
+# mark task as 'in-progress'
 def mark_task_in_progress(id:int) -> None:
     cursor.execute("UPDATE tasks SET status = ? WHERE id = ?",("in-progress", id))
     con.commit()
     con.close()
 
+# mark task as 'done'
 def mark_task_done(id:int):
     cursor.execute("UPDATE tasks SET status = ? WHERE id = ?",("done",id))
     on.commit()
@@ -128,7 +137,7 @@ if __name__ == "__main__":
     elif args.command == 'delete':                                  # Delete task
         delete_task(args.id)
         print(f"Deleted task with id: {args.id}")
-    elif args.command == 'mark-todo':                          # Mark task as 'to do'
+    elif args.command == 'mark-todo':                               # Mark task as 'to do'
         mark_task_todo(args.id)
         print(f"marked task id {args.id} as: 'to do'")
     elif args.command == 'mark-done':                               # Mark task as 'done'
